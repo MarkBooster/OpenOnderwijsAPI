@@ -1,0 +1,32 @@
+[
+    {
+        "fields": {
+            "abbreviation": "AEGB",
+            "name": "Albert-Einsteingebouw",
+            "description": "Gebouw genoemd naar Albert Einstein.  Thuisbasis van de faculteit natuurkunde.",
+            "address": "Eiklaan 12",
+            "postalCode": "1114FG",
+            "city": "Harderwijk",
+            "lat": 52.355133,
+            "lon": 5.616567,
+            "lastModified": "2016-05-09T16:21:00Z"
+        },
+        "model": "api.building",
+        "pk": "1"
+    },
+    {
+        "fields": {
+            "abbreviation": "GWGB",
+            "name": "Washingtongebouw",
+            "description": "Gebouw genoemd naar George Washington.  Thuisbasis van de faculteit historie.",
+            "address": "Eiklaan 14",
+            "postalCode": "1234AB",
+            "city": "Harderwijk",
+            "lat": 52.356133,
+            "lon": 5.617567,
+            "lastModified": "2016-05-09T16:21:00Z"
+        },
+        "model": "api.building",
+        "pk": "2"
+    }
+]

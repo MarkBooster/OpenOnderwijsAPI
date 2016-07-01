@@ -1,0 +1,100 @@
+[
+    {
+        "fields": {
+            "givenname": "Bas",
+            "surname": "Zoetekouw",
+            "displayname": "dr. Basje",
+            "affiliations": [ "2", "5", "7" ],
+            "organization": "SURFnet",
+            "lastModified": "2016-05-01T08:34:00Z"
+        },
+        "model": "api.person",
+        "pk": "1"
+    },
+    {
+        "fields": {
+            "givenname": "Piet",
+            "surname": "Bibber",
+            "displayname": "Dr. Bibber",
+            "affiliations": [ "2", "4", "6", "7" ],
+            "mail": "bibber@harderwijk.edu",
+            "gender": "M",
+            "organization": "SURFnet",
+            "lat": 52.355133,
+            "lon": 5.616567,
+            "lastModified": "2016-05-09T16:21:00Z"
+        },
+        "model": "api.person",
+        "pk": "2"
+    },
+    {
+        "fields": {
+            "description": "hallo een test groep",
+            "name": "test group",
+            "type": "?LesGroep",
+            "lastModified": "2016-05-01T00:00:00Z"
+        },
+        "model": "api.group",
+        "pk": "1"
+    },
+    {
+        "fields": {
+            "description": "Kijk, nog 1",
+            "name": "Nog een andere group",
+            "type": "affiliation",
+            "lastModified": "2016-05-01T00:00:00Z"
+        },
+        "model": "api.group",
+        "pk": "2"
+    },
+    {
+        "fields": {
+            "description": "hallo",
+            "name": "een derde groep",
+            "type": "Generic",
+            "lastModified": "2016-05-01T00:00:00Z"
+        },
+        "model": "api.group",
+        "pk": "3"
+    },
+    {
+        "fields": {
+            "group": "1",
+            "person": "2",
+            "role": "member",
+            "lastModified": "2016-05-01T00:00:00Z"
+        },
+        "model": "api.grouprole",
+        "pk": "1"
+    },
+    {
+        "fields": {
+            "group": "2",
+            "person": "2",
+            "role": "member",
+            "lastModified": "2016-05-01T00:00:00Z"
+        },
+        "model": "api.grouprole",
+        "pk": "2"
+    },
+    {
+        "fields": {
+            "group": "3",
+            "person": "2",
+            "role": "member",
+            "lastModified": "2016-05-01T00:00:00Z"
+        },
+        "model": "api.grouprole",
+        "pk": "3"
+    },
+    {
+        "fields": {
+            "group": "3",
+            "person": "1",
+            "role": "administrator",
+            "lastModified": "2016-05-01T00:00:00Z"
+        },
+        "model": "api.grouprole",
+        "pk": "4"
+    }
+]

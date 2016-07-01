@@ -1,0 +1,51 @@
+[
+    {
+        "fields": {
+            "affiliation": "student"
+        },
+        "model": "api.affiliation",
+        "pk": "1"
+    },
+    {
+        "fields": {
+            "affiliation": "faculty"
+        },
+        "model": "api.affiliation",
+        "pk": "2"
+    },
+    {
+        "fields": {
+            "affiliation": "staff"
+        },
+        "model": "api.affiliation",
+        "pk": "3"
+    },
+    {
+        "fields": {
+            "affiliation": "alum"
+        },
+        "model": "api.affiliation",
+        "pk": "4"
+    },
+    {
+        "fields": {
+            "affiliation": "member"
+        },
+        "model": "api.affiliation",
+        "pk": "5"
+    },
+    {
+        "fields": {
+            "affiliation": "affiliate"
+        },
+        "model": "api.affiliation",
+        "pk": "6"
+    },
+    {
+        "fields": {
+            "affiliation": "employee"
+        },
+        "model": "api.affiliation",
+        "pk": "7"
+    }
+]

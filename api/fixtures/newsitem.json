@@ -1,0 +1,18 @@
+[
+    {
+        "fields":{
+            "feeds": [
+                "1",
+                "2"
+            ],
+            "publishDate": "1860-10-11T13:34:12.876Z",
+            "title": "Welcome",
+            "authors": "Abraham Lincoln",
+            "image": "http://www.surf.nl/image.png",
+            "link": "http://www.surf.nl",
+            "content": "The problem with quotes on the Internet is that is is hard to verify their authenticity"
+        },
+        "model": "api.newsitem",
+        "pk": "1"
+    }
+]

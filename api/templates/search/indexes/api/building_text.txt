@@ -1,8 +1,0 @@
-{{ object.abbr }}
-{{ object.name }}
-{{ object.description }}
-{{ object.address }}
-{{ object.postalCode }}
-{{ object.city }}
-{{ object.lat }}
-{{ object.lon }}

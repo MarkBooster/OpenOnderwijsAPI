@@ -1,15 +1,20 @@
+from collections import OrderedDict
 from rest_framework import pagination
-from rest_framework import serializers
+from rest_framework.response import Response
 
-class MetaSerializer(serializers.Serializer):
-	next       = pagination.NextPageField(source='*')
-	prev       = pagination.PreviousPageField(source='*')
-	totalPages = serializers.Field(source='paginator.num_pages')
-	thisPage   = serializers.Field(source='number')
-	totalItems = serializers.Field(source='paginator.count')
-	firstItem  = serializers.Field(source='start_index')
-	lastItem   = serializers.Field(source='end_index')
+class CustomPagination(pagination.PageNumberPagination):
+    page_query_param = 'pageNumber'
+    page_size = 10
+    page_size_query_param = 'pageSize'
+    max_page_size = 100
 
-class CustomPaginationSerializer(pagination.BasePaginationSerializer):
-	meta = MetaSerializer(source='*')
-	results_field = 'data'
+    def get_paginated_response(self, data):
+        return Response(OrderedDict([
+            ('meta', OrderedDict([
+                ('next', self.get_next_link()),
+                ('prev', self.get_previous_link()),
+                ('totalPages', self.page.paginator.num_pages),
+                ('totalItems', self.page.paginator.count),
+            ])),
+            ('data', data)
+        ]))

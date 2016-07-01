@@ -1,0 +1,20 @@
+[
+    {
+        "fields": {
+            "userId": "1",
+            "roomId": "1",
+            "courseId": "1",
+            "startDateTime": "2013-02-14T10:30:00Z",
+            "endDateTime": "2013-02-14T12:30:00Z",
+            "groupId": "1",
+            "lecturers": [
+                "1",
+                "2"
+            ],
+            "description": null,
+            "lastModified": "2015-01-14T22:16:49.318Z"
+        },
+        "model": "api.schedule",
+        "pk": "1"
+    }
+]

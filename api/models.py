@@ -1,185 +1,188 @@
-from django.utils import timezone
+from __future__ import unicode_literals
+
 from django.db import models
-from haystack.utils.geo import Point
 
 def selfzip(a):
-	return zip(a,a)
-
-class NewsItem(models.Model):
-	pubDate = models.DateTimeField(auto_now_add=True)
-	title   = models.CharField(max_length=255)
-	author  = models.CharField(max_length=255,blank=True,null=True)
-	image   = models.URLField(blank=True,null=True)
-	link    = models.URLField()
-	content = models.TextField()
-	feeds   = models.ManyToManyField('NewsFeed',related_name='items')
-	lastModified =   models.DateTimeField(auto_now=True, default=timezone.now())
-	class Meta:
-		ordering = ('pubDate',)
-
-class NewsFeed(models.Model):
-	title       = models.CharField(max_length=255)
-	description = models.TextField(blank=True,null=True)
-	#updated = models.DateTimeField(auto_now=True)
-
-	class Meta:
-		ordering = ('title',)
-
-	def last_updated(self):
-		my_items = NewsItem.objects.filter(feeds=self)
-		if my_items.count()==0: return None
-		return my_items.order_by('-pubDate')[0].pubDate
-
+    return zip(a, a)
 
 class Affiliation(models.Model):
-	AFFILIATIONS=('student','faculty','staff','alum','member','affiliate','employee')
-	affiliation = models.CharField(choices=selfzip(AFFILIATIONS),max_length=9,help_text='as defined in eduPerson')
+    affiliationId = models.CharField(primary_key=True, max_length=255)
+    affiliation = models.CharField(max_length=32, help_text='as defined in eduPerson')
+
+    def __str__(self):
+        return self.affiliation
 
 class Person(models.Model):
-	GENDERS=('M','F')
+    GENDERS = ('M', 'F', 'U', 'X')
 
-	""" Required attributes """
-	givenName       = models.CharField(max_length=255)
-	surName         = models.CharField(max_length=255,help_text='in X.520 this attribute is called sn')
-	displayName     = models.CharField(max_length=255)
-	affiliations    = models.ManyToManyField('Affiliation',related_name='persons')
-        
-	""" Optional attributes """
-	lat             = models.DecimalField(max_digits=9,decimal_places=6)
-	lon             = models.DecimalField(max_digits=9,decimal_places=6)
-	altitude            = models.DecimalField(max_digits=3,decimal_places=2,blank=True,null=True)
-	mail            = models.EmailField(blank=True,null=True)
-	telephoneNumber = models.CharField(blank=True,null=True,max_length=32)  #models.TelephoneField() IETU E.123 
-	mobileNumber    = models.CharField(blank=True,null=True,max_length=32)  #models.TelephoneField()
-	photo           = models.URLField(blank=True,null=True)
-	gender          = models.CharField(blank=True,null=True,choices=selfzip(GENDERS),max_length=1)
-	organisation    = models.CharField(max_length=255,blank=True,null=True,)
-	department      = models.CharField(max_length=255,blank=True,null=True,help_text='ou in X.520')  #multivalued
-	title           = models.CharField(max_length=255,blank=True,null=True,help_text='job title and/or description')
-	office          = models.ForeignKey('Room',blank=True,null=True)
-	employeeID      = models.CharField(blank=True,null=True,max_length=255)  # only for affiliation=employee
-	studentID       = models.CharField(blank=True,null=True,max_length=255)  # only for affiliation=student
-	lastModified     = models.DateTimeField(auto_now=True,default=timezone.now())
+    userId          = models.CharField(primary_key=True, max_length=255)
+    givenname       = models.CharField(max_length=255)
+    surname         = models.CharField(max_length=255)
+    displayname     = models.CharField(max_length=255)
+    commonname      = models.CharField(null=True, max_length=255)
+    nickname        = models.CharField(null=True, max_length=255)
+    affiliations    = models.ManyToManyField('Affiliation', blank=True)
+    mail            = models.EmailField(null=True)
+    telephonenumber = models.CharField(null=True, max_length=32)
+    mobilenumber    = models.CharField(null=True, max_length=32)
+    photoSocial     = models.URLField(null=True)
+    photoOfficial   = models.URLField(null=True)
+    gender          = models.CharField(null=True, choices=selfzip(GENDERS), max_length=1)
+    organization    = models.CharField(max_length=255)
+    department      = models.CharField(null=True, max_length=255)
+    title           = models.CharField(null=True, max_length=255)
+    office          = models.CharField(null=True, max_length=255)
+    groups          = models.ManyToManyField('Group', through='Grouprole', blank=True)
+    lat             = models.DecimalField(null=True, max_digits=9, decimal_places=6)
+    lon             = models.DecimalField(null=True, max_digits=9, decimal_places=6)
+    lastModified    = models.DateTimeField(auto_now=True)
 
-	def get_location(self):
-		return Point(float(self.lon), float(self.lat))
-	#cluster
-	#education
-	#klas  # LesGroep
-	#groups          = models.ManyToManyField('Group',through='GroupRole')
+    def __str__(self):
+        return self.displayname
 
-
-class Group(models.Model):
-	GROUP_TYPES = ('?LesGroep','?LeerGroep','ou','affiliation','Generic')
-
-	type        = models.CharField(max_length=32,choices=selfzip(GROUP_TYPES))
-	name        = models.CharField(max_length=255)
-	description = models.TextField(blank=True,null=True)
-	lastModified = models.DateTimeField(auto_now=True,default=timezone.now())
-	#members     = models.ManyToManyField('Person',through='GroupRole')
-
-class GroupRole(models.Model):
-	ROLES = ('member','manager','administrator')
-
-	person = models.ForeignKey('Person',related_name='groups')
-	group  = models.ForeignKey('Group',related_name='members')
-	role   = models.CharField(choices=selfzip(ROLES),max_length=32)
-
-	class Meta:
-		unique_together = ('person','group')
-
-	def groupName(self):
-		return self.group.name
-	def groupType(self):
-		return self.group.type
-	def displayName(self):
-		return self.person.displayName
+class Courseresult(models.Model):
+    courseresultId = models.CharField(primary_key=True, max_length=255)
+    student        = models.ForeignKey('Person')
+    course         = models.ForeignKey('Course')
+    # course.lastModified?
+    lastModified   = models.DateTimeField(auto_now=True)
+    grade          = models.CharField(null=True, max_length=15)
+    comment        = models.TextField(null=True)
+    passed         = models.NullBooleanField()
 
 class Building(models.Model):
-	abbr        = models.CharField(max_length=32)
-	name        = models.CharField(max_length=256)
-	description = models.TextField()
-	address     = models.CharField(max_length=256)
-	postalCode  = models.CharField(max_length=16)
-	city        = models.CharField(max_length=255)
-	lat         = models.DecimalField(max_digits=9,decimal_places=6)
-	lon         = models.DecimalField(max_digits=9,decimal_places=6)
-	altitude            = models.DecimalField(max_digits=3,decimal_places=2,blank=True,null=True)
-	lastModified = models.DateTimeField(auto_now=True,default=timezone.now())
+    buildingId   = models.CharField(primary_key=True, max_length=255)
+    abbreviation = models.CharField(max_length=32)
+    name         = models.CharField(max_length=255)
+    description  = models.TextField()
+    address      = models.CharField(null=True, max_length=256)
+    postalCode   = models.CharField(null=True, max_length=16)
+    city         = models.CharField(max_length=255)
+    lat          = models.DecimalField(null=True, max_digits=9, decimal_places=6)
+    lon          = models.DecimalField(null=True, max_digits=9, decimal_places=6)
+    altitude     = models.DecimalField(null=True, max_digits=3, decimal_places=2)
+    lastModified = models.DateTimeField(auto_now=True)
 
-	def get_location(self):
-		return Point(float(self.lon), float(self.lat))
+    def __str__(self):
+        return self.abbreviation
 
-class Room(models.Model):
-	building            = models.ForeignKey('Building',related_name='rooms')
-	abbr                = models.CharField(max_length=32)
-	name                = models.CharField(max_length=255,blank=True)
-	description         = models.TextField(blank=True,null=True)
-	totalSeats          = models.PositiveIntegerField(blank=True,null=True)
-	totalWorkspaces     = models.PositiveIntegerField(blank=True,null=True)
-	availableWorkspaces = models.PositiveIntegerField(blank=True,null=True)
-	lastModified         = models.DateTimeField(auto_now=True,default=timezone.now())
-	# type              = models.TextField()
-	lat             = models.DecimalField(max_digits=9,decimal_places=6)
-	lon             = models.DecimalField(max_digits=9,decimal_places=6)
-	altitude            = models.DecimalField(max_digits=3,decimal_places=2,blank=True,null=True)
+class Testresult(models.Model):
+    testresultId   = models.CharField(primary_key=True, max_length=255)
+    # testresult.lastModified?
+    courseId       = models.ManyToManyField('Course', related_name='+', blank=True)
+    courseresult   = models.ForeignKey('Courseresult', related_name='testresults')
+    userId         = models.ManyToManyField('Person', related_name='+', blank=True)
+    description    = models.CharField(max_length=255)
+    lastModified   = models.DateTimeField(auto_now=True)
+    assessmentType = models.CharField(null=True, max_length=255)
+    testDate       = models.DateField()
+    grade          = models.CharField(max_length=255)
+    comment        = models.TextField()
+    passed         = models.NullBooleanField()
+    weight         = models.PositiveSmallIntegerField(null=True)
 
 class Course(models.Model):
-	LEVELS    = ('HBO-B','HBO-M','WO-B','WO-M','WO-D')
-	LANGUAGES = ('nl','en','de')
-	name         = models.CharField(max_length=255,unique=True)
-	abbr         = models.CharField(max_length=32,unique=True)
-	ects         = models.PositiveIntegerField()
-	description  = models.TextField()
-	goals        = models.TextField(blank=True,null=True)
-	requirements = models.TextField(blank=True,null=True)
-	level        = models.CharField(choices=selfzip(LEVELS),max_length=8)
-	format       = models.TextField(blank=True,null=True)
-	language     = models.CharField(choices=selfzip(LANGUAGES),max_length=2)
-	enrollment   = models.TextField(blank=True,null=True)
-	literature   = models.TextField(blank=True,null=True)
-	exams        = models.TextField(blank=True,null=True)
-	schedule     = models.TextField(blank=True,null=True)
-	link         = models.URLField(blank=True,null=True)
-	organisation = models.CharField(max_length=255,blank=True,null=True)
-	department   = models.CharField(max_length=255,blank=True,null=True)
-	lecturers    = models.ForeignKey('Person',related_name='courses')
-	groups       = models.ManyToManyField('Group',related_name='courses')
-	lastModified  = models.DateTimeField(auto_now=True,default=timezone.now())
-	
-	#	feeds   = models.ManyToManyField('Minor',related_name='courses')
+    LEVELS    = ('HBO-B', 'HBO-M', 'WO-B', 'WO-M', 'WO-D')
+    LANGUAGES = ('nl-NL', 'en-US', 'de-DE')
 
-class Lesson(models.Model):
-	start		= models.DateTimeField()
-	end 		= models.DateTimeField()
-	course		= models.ForeignKey('Course',related_name = 'lessons')
-	room 		= models.ForeignKey('Room', related_name = 'lessons')
-	description	= models.TextField(blank=True)
-	lastModified    = models.DateTimeField(auto_now=True,default=timezone.now())
+    courseId     = models.CharField(primary_key=True, max_length=255)
+    name         = models.CharField(max_length=255)
+    abbr         = models.CharField(null=True, max_length=32)
+    ects         = models.PositiveIntegerField(null=True)
+    description  = models.TextField()
+    goals        = models.TextField(null=True)
+    requirements = models.TextField(null=True)
+    level        = models.CharField(null=True, choices=selfzip(LEVELS), max_length=8)
+    format       = models.TextField(null=True)
+    language     = models.CharField(choices=selfzip(LANGUAGES), max_length=2)
+    enrollment   = models.TextField(null=True)
+    literature   = models.TextField(null=True)
+    exams        = models.TextField(null=True)
+    schedule     = models.TextField(null=True)
+    link         = models.URLField(null=True)
+    organization = models.CharField(null=True, max_length=255)
+    department   = models.CharField(null=True, max_length=255)
+    lecturers    = models.ManyToManyField('Person', related_name='+', blank=True)
+    groups       = models.ManyToManyField('Group', related_name='courses', blank=True)
+    lastModified = models.DateTimeField(auto_now=True)
 
-#??
-class Minor(models.Model):
-	name        = models.CharField(max_length=255,unique=True)
-	description = models.TextField()
-	courses     = models.ManyToManyField('Course',related_name='minors')
-	lastModified = models.DateTimeField(auto_now=True,default=timezone.now())
+    def __str__(self):
+        return self.name
 
-class TestResult(models.Model):
-	student       = models.ForeignKey('Person')
-	course        = models.ForeignKey('Course')
-	courseResult  = models.ForeignKey('CourseResult',blank=True,null=True,related_name='testResults')
-	description   = models.CharField(max_length=255)
-	lastModified  = models.DateTimeField(auto_now=True,default=timezone.now())
-	date          = models.DateField()
-	grade         = models.DecimalField(max_digits=3,decimal_places=2,blank=True,null=True)
-	result        = models.CharField(max_length=15,blank=True,null=True)
-	passed        = models.NullBooleanField()
-	weight        = models.DecimalField(max_digits=4,decimal_places=3)
+class Schedule(models.Model):
+    scheduleId    = models.CharField(primary_key=True, max_length=255)
+    userId        = models.ManyToManyField('Person', related_name='+', blank=True)
+    roomId        = models.ManyToManyField('Room', related_name='+', blank=True)
+    buildingId    = models.ManyToManyField('Building', related_name='+', blank=True)
+    courseId      = models.ManyToManyField('Course', related_name='+', blank=True)
+    startDateTime = models.DateTimeField(null=True)
+    endDateTime   = models.DateTimeField(null=True)
+    groupId       = models.ManyToManyField('Group', related_name='+', blank=True)
+    lecturers     = models.ManyToManyField('Person', related_name='+', blank=True)
+    description   = models.TextField(null=True)
+    lastModified  = models.DateTimeField(auto_now=True)
 
-class CourseResult(models.Model):
-	student      = models.ForeignKey('Person')
-	course       = models.ForeignKey('Course')
-	lastModified = models.DateTimeField(auto_now=True,default=timezone.now())
-	grade        = models.DecimalField(max_digits=3,decimal_places=2,blank=True,null=True)
-	result       = models.CharField(blank=True,null=True,max_length=15)
-	passed       = models.NullBooleanField()
+class Room(models.Model):
+    roomId              = models.CharField(primary_key=True, max_length=255)
+    buildingId          = models.ForeignKey('Building', related_name='rooms')
+    abbreviation        = models.CharField(max_length=32)
+    name                = models.CharField(max_length=255)
+    description         = models.TextField(null=True)
+    totalSeats          = models.PositiveIntegerField(null=True)
+    totalWorkspaces     = models.PositiveIntegerField(null=True)
+    availableWorkspaces = models.PositiveIntegerField(null=True)
+    lat                 = models.DecimalField(null=True, max_digits=9, decimal_places=6)
+    lon                 = models.DecimalField(null=True, max_digits=9, decimal_places=6)
+    altitude            = models.DecimalField(null=True, max_digits=3, decimal_places=2)
+    lastModified        = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.abbreviation
+
+class Group(models.Model):
+    GROUP_TYPES = ('?LesGroep','?LeerGroep','ou','affiliation','Generic')
+
+    groupId      = models.CharField(primary_key=True, max_length=255)
+    name         = models.CharField(max_length=255)
+    description  = models.TextField(null=True)
+    type         = models.CharField(choices=selfzip(GROUP_TYPES), max_length=32)
+    members      = models.ManyToManyField('Person', through='Grouprole', blank=True)
+    lastModified = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+class Grouprole(models.Model):
+    ROLES = ('member', 'manager', 'administrator')
+
+    grouproleId  = models.CharField(primary_key=True, max_length=255)
+    group        = models.ForeignKey('Group')
+    person       = models.ForeignKey('Person')
+    role         = models.CharField(choices=selfzip(ROLES), max_length=32)
+    lastModified = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('person', 'group')
+
+class Newsfeed(models.Model):
+    newsfeedId    = models.CharField(primary_key=True, max_length=255)
+    title         = models.CharField(max_length=255)
+    description   = models.TextField(null=True)
+    groups        = models.ManyToManyField('Group', related_name='+', blank=True)
+    lastModified  = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
+
+class Newsitem(models.Model):
+    newsitemId    = models.CharField(primary_key=True, max_length=255)
+    feeds         = models.ManyToManyField('Newsfeed', related_name='items', blank=True)
+    publishDate   = models.DateTimeField()
+    title         = models.CharField(max_length=255)
+    authors       = models.CharField(max_length=255, null=True)
+    image         = models.URLField(null=True)
+    link          = models.URLField(null=True)
+    content       = models.TextField()
+
+    def __str__(self):
+        return self.title
