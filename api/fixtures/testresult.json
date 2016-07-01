@@ -1,0 +1,47 @@
+[
+    {
+        "fields": {
+            "courseId": [
+                "3",
+                "4"
+            ],
+            "courseresult": "1",
+            "userId": [
+                "2"
+            ],
+            "description": "Tweede deeltentamen",
+            "lastModified": "2013-12-21T13:11:00Z",
+            "assessmentType": null,
+            "testDate": "2013-12-18",
+            "grade": "8",
+            "comment": "Some comment",
+            "passed": true,
+            "weight": 60
+        },
+        "model": "api.testresult",
+        "pk": "1"
+    },
+    {
+        "fields": {
+            "courseId": [
+                "3",
+                "4"
+            ],
+            "courseresult": "1",
+            "userId": [
+                "1",
+                "2"
+            ],
+            "description": "Eerste deeltentamen",
+            "lastModified": "2013-11-11T15:32:00Z",
+            "assessmentType": null,
+            "testDate": "2013-11-02",
+            "grade": "5",
+            "comment": "Some comment",
+            "passed": false,
+            "weight": 20
+        },
+        "model": "api.testresult",
+        "pk": "2"
+    }
+]

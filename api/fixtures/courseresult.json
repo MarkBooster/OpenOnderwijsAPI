@@ -1,0 +1,14 @@
+[
+    {
+        "fields": {
+            "student": "2",
+            "course": "3",
+            "lastModified": "2013-12-31T10:01:00Z",
+            "grade": "6.5",
+            "comment": null,
+            "passed": true
+        },
+        "model": "api.courseresult",
+        "pk": "1"
+    }
+]

@@ -1,0 +1,26 @@
+[
+    {
+        "fields": {
+            "title": "feed 1",
+            "description": "test 1",
+            "groups": [
+               "1"
+            ],
+            "lastModified": "2016-05-09T16:21:00Z"
+        },
+        "model": "api.newsfeed",
+        "pk": "1"
+    },
+    {
+        "fields": {
+            "title": "feed 2",
+            "description": "test 2",
+            "groups": [
+               "2"
+            ],
+            "lastModified": "2016-05-09T16:21:00Z"
+        },
+        "model": "api.newsfeed",
+        "pk": "2"
+    }
+]
